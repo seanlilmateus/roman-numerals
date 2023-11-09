@@ -25,17 +25,16 @@ class RomanNumeralsTest(unittest.TestCase):
 
 
 def convert(arabic):
-    return ROMANS.get(arabic, compose_roman2(arabic))
-
-def compose_roman2(num):
-    def encode(memo2, pair):
-        arabic, roman = pair
-        num2, memo = memo2
-        quotient, num2 = divmod(num2, arabic)
-        return (num2, memo + roman * quotient)
-    return reduce(encode, ROMANS.items(), (num, ""))[-1]
+    return ROMANS.get(arabic, compose_roman(arabic))
 
 def compose_roman(num):
+    def encode(num2):
+        for arabic, roman in ROMANS.items():
+            quotient, num2 = divmod(num2, arabic)
+            yield roman * quotient
+    return "".join(encode(num))
+
+def compose_roman2(num):
     roman_numerals = ''
     for value in sorted(ROMANS.keys(), reverse=True):
         while num >= value:

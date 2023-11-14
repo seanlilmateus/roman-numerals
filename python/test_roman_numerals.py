@@ -1,7 +1,8 @@
 import unittest
 from functools import reduce
+from typing import Generator
 
-ROMANS = {
+ROMANS: list[tuple[int, str]] = {
 	1000: "M",
     900:"CM",
     500: "D",
@@ -24,13 +25,13 @@ class RomanNumeralsTest(unittest.TestCase):
             self.assertEqual(actual, roman)
 
 
-def convert(arabic):
+def convert(arabic: int) -> str:
     return ROMANS.get(arabic, compose_roman(arabic))
 
-def compose_roman(num):
-    def encode(num2):
+def compose_roman(num: int) -> str:
+    def encode(input: int) -> Generator[str, None, None]:
         for arabic, roman in ROMANS.items():
-            quotient, num2 = divmod(num2, arabic)
+            quotient, input = divmod(input, arabic)
             yield roman * quotient
     return "".join(encode(num))
 
